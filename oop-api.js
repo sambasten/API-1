@@ -16,31 +16,45 @@ let rl = readline.createInterface({
 });
 rl.question('What functionality would you like to access? (search/post)', function(reply){
 	if(reply ===''){
+
 		rl.close();
 		console.log('Ha! we didnt forget to check please type in something');
+	
 	}
+
 	else if (reply === 'search') {
+
 		rl.question('What topic would you like to search twitter for? ', function(answer){
-		if(answer ===''){
+			
+			if(answer ===''){
+				rl.close();
+				console.log('Ha! we didnt forget to check please type in something');
+			}
+
+			result = new Tweets(answer);
+			loader(result.searchTweets);
 			rl.close();
-			console.log('Ha! we didnt forget to check please type in something');
-		}
-		result = new Tweets(answer);
-		loader(result.searchTweets);
-		rl.close();
-	});
+
+	    });
 	}
+
 	else if(reply==='post') {
+
 		rl.question('What is on your mind ?', function(answer){
-	if(answer ===''){
-		rl.close();
-		console.log('Ha! we didnt forget to check please type in something');
+			
+			if(answer ===''){
+
+				rl.close();
+				console.log('Ha! we didnt forget to check please type in something');
+			}
+
+			result = new Tweets(answer);
+			loader(result.postTweets);
+			rl.close();
+
+		});
 	}
-	result = new Tweets(answer);
-	loader(result.postTweets);
-	rl.close();
-});
-	}
+
 	else{
 		rl.close();
 	}
@@ -49,16 +63,23 @@ rl.question('What functionality would you like to access? (search/post)', functi
 
 
 class Tweets {
+/**
+*Comstructor that accepts value passed in by user
+*@param answer
+*/
 	constructor(answer) {
 		this.answer = answer;
 	}
-
+/**
+*Using HTTP GET verb
+*This method fetches tweets that contains keyword passed in by user
+*/
 	searchTweets() {
 
-		client.get('search/tweets', { q: this.answer, count: 10 }, function(err, data, response) {
+		client.get('search/tweets', { q: this.answer, count: 5 }, function(err, data, response) {
 			var tweet = data.statuses;
-			var count = 10;
-			//console.log('Tweets that contain ' + this.answer);
+			var count = 5;
+
 			for(let i = 0; i < count; i++){
 				var tmp = tweet[i];
 				console.log(tmp.text);
@@ -66,13 +87,19 @@ class Tweets {
 		}); 
 	}
 
+/**
+*This method update new tweet by user using HTTP POST verb
+*/
 	postTweets() {
 		client.post('statuses/update', {status: this.answer}, function(err, data, response) {
-			console.log(data.text);
+			console.log(' Your Tweet ' + data.text + ' has been updated');
 		}); 
 	}
 }
 
+/**
+*This function display a progress bar while user's request is being processed
+*/
 function loader(onComplete){
 	let self = result;
     // EXAMPLE 2 ---------------------------------------------
