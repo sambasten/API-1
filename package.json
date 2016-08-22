@@ -19,6 +19,7 @@
   "author": "Atanda Olalekan",
   "license": "ISC",
   "dependencies": {
+    "cli-progress": "^1.2.0",
     "twitter": "^1.4.0"
   }
 }
