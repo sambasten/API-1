@@ -29,4 +29,10 @@ rl.question('Please enter a topic to track on twitter? ', (answer) => {
 
   rl.close();
 });
+rl.question('Whats on your mind?', (answer)) => {
+	client.post('statuses/update', { status: answer }, function(err, data, response) {
+  	console.log(data['text'])
+	});
+	rl.close();
+});
 
