@@ -14,12 +14,19 @@ const rl = readline.createInterface({
 });
 
 rl.question('Please enter a topic to track on twitter? ', (answer) => {
-  // TODO: Log the answer in a database
 
- client.get('search/tweets', { q: answer, count: 5 }, function(err, data, response) {
-
-  console.log(data);
-}) 
+  client.get('search/tweets', { q: answer, count: 10 }, function(err, data, response) {
+  	
+  	var tweet = data.statuses;
+  	var count = 10;
+  	console.log('Tweets that contain ' + answer);
+  	for(let i = 0; i < count; i++){
+  		var tmp = tweet[i];
+  		console.log(tmp['text']);
+  	}
+  	
+ }); 
 
   rl.close();
 });
+
