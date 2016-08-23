@@ -1,5 +1,5 @@
 # Twitter API CONSUMPTION ON CONSOLE APPLICATION
-This application consumems Twitter API endpoints using HTTP verbs get and post.
+This application consumes Twitter API endpoints using HTTP verbs get and post.
 
 ### There are bascically three (3) functionalities
 - Search Tweet
