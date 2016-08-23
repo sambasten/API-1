@@ -1,20 +1,22 @@
+require('dotenv').config();
+
 var Twitter = require('twitter');
 var readline = require('readline');
 var progress= require('cli-progress');
 
-
 var client = new Twitter({
-	consumer_key: '0PoH6kw5aUTvzXiBrMxzbqsis',
-	consumer_secret: 'bf0E2aEpcEhA9vL1X9FBSl0AgLy68hZp6u3stl7xLUu2KRCTIJ',
-	access_token_key: '176463351-HfEF4ZB6qpRRKshTZUX4VdksalE3OMfO2wCMXT24',
-	access_token_secret: 'MfvSEdumw3SkeXEWe3mMlTFhyOCjK4dlFgBYb6GeiE0Eq'
+	consumer_key: process.env.consumer_key,
+	consumer_secret: process.env.consumer_secret,
+	access_token_key: process.env.access_token_key,
+	access_token_secret: process.env.access_token_secret
 });
+
 
 let rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
-rl.question('What functionality would you like to access? (search/post)', function(reply){
+rl.question('What functionality would you like to access? (search/post/timeline) ', function(reply){
 	if(reply ===''){
 
 		rl.close();
@@ -55,6 +57,22 @@ rl.question('What functionality would you like to access? (search/post)', functi
 		});
 	}
 
+	else if (reply === 'timeline') {
+
+		rl.question('Whose timeline are you trying to view? ', function(answer){
+			
+			if(answer ===''){
+				rl.close();
+				console.log('Ha! we didnt forget to check please type in something');
+			}
+
+			result = new Tweets(answer);
+			loader(result.userTimeline);
+			rl.close();
+
+	    });
+	}
+
 	else{
 		rl.close();
 	}
@@ -82,7 +100,8 @@ class Tweets {
 
 			for(let i = 0; i < count; i++){
 				var tmp = tweet[i];
-				console.log(tmp.text);
+				if (tmp.text === undefined) return false;
+				console.log(tmp.text + '\n');
 			}
 		}); 
 	}
@@ -93,6 +112,19 @@ class Tweets {
 	postTweets() {
 		client.post('statuses/update', {status: this.answer}, function(err, data, response) {
 			console.log(' Your Tweet ' + data.text + ' has been updated');
+		}); 
+	}
+
+	userTimeline() {
+		client.get('statuses/user_timeline', { screen_name: this.answer, count: 5 }, function(err, data, response) {
+
+			var count = 5;
+
+			for(let i = 0; i < count; i++){
+				var temp = data[i];
+				if (temp.text === undefined) return false;
+				console.log(temp.text + '\n');
+			}
 		}); 
 	}
 }
